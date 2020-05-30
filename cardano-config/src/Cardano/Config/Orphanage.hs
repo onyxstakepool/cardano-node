@@ -1,6 +1,7 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
@@ -13,12 +14,52 @@ import qualified Prelude
 
 import           Data.Aeson
 import           Network.Socket (PortNumber)
+import           Data.FingerTree.Strict (Measured (..))
 import           Data.Scientific (coefficient)
 import qualified Data.Text as Text
 
 import           Cardano.BM.Data.Tracer (TracingVerbosity(..))
 import qualified Cardano.Chain.Update as Update
 import           Ouroboros.Consensus.NodeId (NodeId(..), CoreNodeId (..))
+import           Ouroboros.Network.Block
+import           Ouroboros.Consensus.Mock.Ledger.Block
+import           Ouroboros.Consensus.Mock.Ledger.Block.PBFT
+import           Ouroboros.Consensus.Mock.Ledger.Block.Praos
+import           Ouroboros.Consensus.Mock.Protocol.Praos
+import           Ouroboros.Consensus.Protocol.PBFT
+import           Ouroboros.Consensus.Mock.Ledger.Block.BFT
+import           Ouroboros.Consensus.Protocol.BFT
+
+instance HasHeader (Serialised (SimpleBlock SimpleMockCrypto (SimplePBftExt SimpleMockCrypto PBftMockCrypto))) where
+  blockHash      = panic ""
+  blockPrevHash  = panic ""
+  blockSlot      = panic ""
+  blockNo        = panic ""
+  blockInvariant = panic ""
+
+instance Measured BlockMeasure (Serialised (SimpleBlock SimpleMockCrypto (SimplePBftExt SimpleMockCrypto PBftMockCrypto))) where
+  measure = panic ""
+
+instance HasHeader (Serialised (SimpleBlock SimpleMockCrypto (SimplePraosExt SimpleMockCrypto PraosMockCrypto))) where
+  blockHash      = panic ""
+  blockPrevHash  = panic ""
+  blockSlot      = panic ""
+  blockNo        = panic ""
+  blockInvariant = panic ""
+
+instance Measured BlockMeasure (Serialised (SimpleBlock SimpleMockCrypto (SimplePraosExt SimpleMockCrypto PraosMockCrypto))) where
+  measure = panic ""
+
+
+instance HasHeader (Serialised (SimpleBlock SimpleMockCrypto (SimpleBftExt SimpleMockCrypto BftMockCrypto))) where
+  blockHash      = panic ""
+  blockPrevHash  = panic ""
+  blockSlot      = panic ""
+  blockNo        = panic ""
+  blockInvariant = panic ""
+
+instance Measured BlockMeasure (Serialised (SimpleBlock SimpleMockCrypto (SimpleBftExt SimpleMockCrypto BftMockCrypto))) where
+  measure = panic ""
 
 deriving instance Show TracingVerbosity
 
@@ -49,4 +90,3 @@ instance FromJSON Update.ApplicationName where
   parseJSON invalid  =
     panic $ "Parsing of application name failed due to type mismatch. "
     <> "Encountered: " <> (Text.pack $ Prelude.show invalid)
-
